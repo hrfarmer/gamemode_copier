@@ -67,6 +67,7 @@ class Window(wx.Frame):
         dest_skin = self.combo2.GetValue()
         source_path = f"{self.path}\\Skins\\{source_skin}"
         destination_path = f"{self.path}\\Skins\\{dest_skin}"
+        s.copy_files(source_path, destination_path)
 
         
 
@@ -78,6 +79,18 @@ class Skin():
         for folder in os.listdir(skin_folder):
             skins.append(folder)
         return skins
+    
+    def copy_files(self, source_path, destination_path):
+        for file in os.listdir(source_path):
+            if file in taiko_elements:
+                s_path = f"{source_path}\\{file}"
+                in_file = open(s_path, "rb")
+                data = in_file.read()
+
+                d_path = f"{destination_path}\\{file}"
+                with open(d_path, "wb") as out:
+                    out.write(data)
+                print(f"Copied {file}")
 
 s = Skin()
 
