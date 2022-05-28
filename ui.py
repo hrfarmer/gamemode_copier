@@ -1,5 +1,6 @@
 import wx
 import os
+import re
 from elements import taiko_elements
 
 class Window(wx.Frame):
@@ -44,7 +45,7 @@ class Window(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
 
         self.SetSize((600, 600))
-        self.SetTitle('Simple menu')
+        self.SetTitle('Gamemode Copier')
         self.Centre()
 
     def OnQuit(self, e):
@@ -52,13 +53,13 @@ class Window(wx.Frame):
     
     def OnButton(self, e):
         self.path = self.path.GetValue()
-        skin_list = s.get_skins(self.path)
+        self.skin_list = s.get_skins(self.path)
 
         # Makes dropdown appear
         self.text = wx.StaticText(self.panel, label = "Choose the skin you will copy from", pos = (5, 35))
-        self.combo = wx.ComboBox(self.panel, choices = skin_list, pos=(5, 55))
+        self.combo = wx.ComboBox(self.panel, choices = self.skin_list, pos=(5, 55))
         self.text2 = wx.StaticText(self.panel, label = "Choose the skin you will copy to", pos = (5, 80))
-        self.combo2 = wx.ComboBox(self.panel, choices = skin_list, pos=(5, 100))
+        self.combo2 = wx.ComboBox(self.panel, choices = self.skin_list, pos=(5, 100))
         self.submit = wx.Button(self.panel, label = "Submit", pos = (5, 135))
         self.submit.Bind(wx.EVT_BUTTON, self.OnSubmit)
     
@@ -68,7 +69,6 @@ class Window(wx.Frame):
         source_path = f"{self.path}\\Skins\\{source_skin}"
         destination_path = f"{self.path}\\Skins\\{dest_skin}"
         s.copy_files(source_path, destination_path)
-
         
 
 class Skin():
