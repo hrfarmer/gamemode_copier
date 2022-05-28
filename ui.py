@@ -51,16 +51,24 @@ class Window(wx.Frame):
         self.Close()
     
     def OnButton(self, e):
-        path = self.path.GetValue()
-        skin_list = s.get_skins(path)
+        self.path = self.path.GetValue()
+        skin_list = s.get_skins(self.path)
 
         # Makes dropdown appear
-        self.combo = wx.ComboBox(self.panel, choices = skin_list)
-        self.sizer2 = wx.GridBagSizer(2, 2)
-        self.sizer2.Add(self.combo, (0, 5))
-        self.border2 = wx.BoxSizer()
-        self.border2.Add(self.sizer2, 2, wx.ALL | wx.EXPAND, 5)
-        self.panel.SetSizerAndFit(self.border2)
+        self.text = wx.StaticText(self.panel, label = "Choose the skin you will copy from", pos = (5, 35))
+        self.combo = wx.ComboBox(self.panel, choices = skin_list, pos=(5, 55))
+        self.text2 = wx.StaticText(self.panel, label = "Choose the skin you will copy to", pos = (5, 80))
+        self.combo2 = wx.ComboBox(self.panel, choices = skin_list, pos=(5, 100))
+        self.submit = wx.Button(self.panel, label = "Submit", pos = (5, 135))
+        self.submit.Bind(wx.EVT_BUTTON, self.OnSubmit)
+    
+    def OnSubmit(self, e):
+        source_skin = self.combo.GetValue()
+        dest_skin = self.combo2.GetValue()
+        source_path = f"{self.path}\\Skins\\{source_skin}"
+        destination_path = f"{self.path}\\Skins\\{dest_skin}"
+
+        
 
 class Skin():
 
