@@ -51,8 +51,27 @@ class Window(wx.Frame):
         self.Close()
     
     def OnButton(self, e):
-        test = self.path.GetValue()
-        print(test)
+        path = self.path.GetValue()
+        skin_list = s.get_skins(path)
+
+        # Makes dropdown appear
+        self.combo = wx.ComboBox(self.panel, choices = skin_list)
+        self.sizer2 = wx.GridBagSizer(2, 2)
+        self.sizer2.Add(self.combo, (0, 5))
+        self.border2 = wx.BoxSizer()
+        self.border2.Add(self.sizer2, 2, wx.ALL | wx.EXPAND, 5)
+        self.panel.SetSizerAndFit(self.border2)
+
+class Skin():
+
+    def get_skins(self, path):
+        skins = []
+        skin_folder = path + "\\Skins"
+        for folder in os.listdir(skin_folder):
+            skins.append(folder)
+        return skins
+
+s = Skin()
 
 def main():
 
