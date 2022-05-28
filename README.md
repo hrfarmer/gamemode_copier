@@ -1,4 +1,4 @@
 # gamemode_copier
-Copies gamemodes for osu!
+Copies gamemodes from one skin to another for osu!
 
 https://trello.com/b/QePJxROD/gamemode-copier to-do list
