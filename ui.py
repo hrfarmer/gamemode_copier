@@ -95,7 +95,10 @@ class Skin():
     def copy_files(self, source_path, destination_path):
         for file in os.listdir(source_path):
             for element in taiko_elements:
+                file = file.replace(".png", "").strip()
+                element = element.replace(".png", "").strip()
                 if file.startswith(element):
+                    file = file + ".png"
                     s_path = f"{source_path}\\{file}"
                     in_file = open(s_path, "rb")
                     data = in_file.read()
@@ -106,23 +109,6 @@ class Skin():
                     print(f"Copied {file}")
                 else:
                     continue
-            # for animated in taiko_animated_elements:
-            #     file = file.replace(".png", "").strip()
-            #     animated = animated.replace(".png", "").strip()
-            #     x = re.findall(animated, file)  
-            #     if x:
-            #         file = file + ".png"
-            #         s_path = f"{source_path}\\{file}"
-            #         in_file = open(s_path, "rb")
-            #         data = in_file.read()
-
-            #         d_path = f"{destination_path}\\{file}"
-            #         with open(d_path, "wb") as out:
-            #             out.write(data)
-            #         print(f"Copied {file}")
-            #     else:
-            #         continue
-            
 
 s = Skin()
 
