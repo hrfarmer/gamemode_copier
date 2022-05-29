@@ -1,6 +1,8 @@
 import wx
 import os
 import re
+import tkinter as tk
+from tkinter import filedialog
 from elements import taiko_elements
 from elements import taiko_animated_elements
 
@@ -14,11 +16,12 @@ class Window(wx.Frame):
     def InitUI(self):
 
         self.panel = wx.Panel(self)
-        self.result = wx.StaticText(self.panel, label = "")
-        self.result.SetForegroundColour(wx.RED)
+        self.foldermessage = wx.StaticText(self.panel, label = "Input the path of your osu! folder:")
         self.path = wx.TextCtrl(self.panel, size = (400, -1))
-        self.button = wx.Button(self.panel, label="Browse")
+        self.button = wx.Button(self.panel, label="Submit")
+        self.button2 = wx.Button(self.panel, label="Browse")
         self.button.Bind(wx.EVT_BUTTON, self.OnButton)
+        self.button2.Bind(wx.EVT_BUTTON, self.OnBrowse)
 
         # Set sizer for frame
         self.windowSizer = wx.BoxSizer()
@@ -26,8 +29,10 @@ class Window(wx.Frame):
 
         # Set sizer for panel content
         self.sizer = wx.GridBagSizer(2, 2)
-        self.sizer.Add(self.button, (0, 2), (1, 2), flag = wx.EXPAND)
-        self.sizer.Add(self.path, (0 ,0))
+        self.sizer.Add(self.button, (0, 2), (0, 10), flag = wx.EXPAND)
+        self.sizer.Add(self.foldermessage, (0, 0))
+        self.sizer.Add(self.path, (1 ,0))
+        self.sizer.Add(self.button2, (1, 2),  (0, 10), flag = wx.EXPAND)
 
         # Border
         self.border = wx.BoxSizer()
@@ -45,24 +50,30 @@ class Window(wx.Frame):
 
         self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
 
-        self.SetSize((600, 600))
+        self.SetSize((500, 117))
         self.SetTitle('Gamemode Copier')
         self.Centre()
 
     def OnQuit(self, e):
         self.Close()
     
-    def OnButton(self, e):
+    def OnButton(self, e, folder_path=""):
         self.path = self.path.GetValue()
-        self.skin_list = s.get_skins(self.path)
+        if self.path:
+            self.skin_list = s.get_skins(self.path)
+        elif folder_path:
+            print('hi')
+            self.skin_list = s.get_skins(self.folder_path)
+        
 
         # Makes dropdown appear
-        self.text = wx.StaticText(self.panel, label = "Choose the skin you will copy from", pos = (5, 35))
-        self.combo = wx.ComboBox(self.panel, choices = self.skin_list, pos=(5, 55))
-        self.text2 = wx.StaticText(self.panel, label = "Choose the skin you will copy to", pos = (5, 80))
-        self.combo2 = wx.ComboBox(self.panel, choices = self.skin_list, pos=(5, 100))
-        self.submit = wx.Button(self.panel, label = "Submit", pos = (5, 135))
+        self.text = wx.StaticText(self.panel, label = "Choose the skin you will copy from", pos = (5, 55))
+        self.combo = wx.ComboBox(self.panel, choices = self.skin_list, pos=(5, 75))
+        self.text2 = wx.StaticText(self.panel, label = "Choose the skin you will copy to", pos = (5, 100))
+        self.combo2 = wx.ComboBox(self.panel, choices = self.skin_list, pos=(5, 120))
+        self.submit = wx.Button(self.panel, label = "Submit", pos = (5, 155))
         self.submit.Bind(wx.EVT_BUTTON, self.OnSubmit)
+        self.SetSize((500, 243))
     
     def OnSubmit(self, e):
         source_skin = self.combo.GetValue()
@@ -70,6 +81,10 @@ class Window(wx.Frame):
         source_path = f"{self.path}\\Skins\\{source_skin}"
         destination_path = f"{self.path}\\Skins\\{dest_skin}"
         s.copy_files(source_path, destination_path)
+    
+    def OnBrowse(self, e):
+        folder_path = filedialog.askdirectory()
+        self.path.SetValue(folder_path)
         
 
 class Skin():
@@ -112,6 +127,9 @@ class Skin():
                     continue
 
 s = Skin()
+
+root = tk.Tk()
+root.withdraw()
 
 def main():
 
