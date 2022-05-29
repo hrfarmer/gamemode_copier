@@ -57,14 +57,10 @@ class Window(wx.Frame):
     def OnQuit(self, e):
         self.Close()
     
-    def OnButton(self, e, folder_path=""):
+    def OnButton(self, e):
         self.path = self.path.GetValue()
         if self.path:
             self.skin_list = s.get_skins(self.path)
-        elif folder_path:
-            print('hi')
-            self.skin_list = s.get_skins(self.folder_path)
-        
 
         # Makes dropdown appear
         self.text = wx.StaticText(self.panel, label = "Choose the skin you will copy from", pos = (5, 55))
@@ -98,23 +94,8 @@ class Skin():
     
     def copy_files(self, source_path, destination_path):
         for file in os.listdir(source_path):
-            if file in taiko_elements:
-                s_path = f"{source_path}\\{file}"
-                in_file = open(s_path, "rb")
-                data = in_file.read()
-
-                d_path = f"{destination_path}\\{file}"
-                with open(d_path, "wb") as out:
-                    out.write(data)
-                print(f"Copied {file}")
-            for animated in taiko_animated_elements:
-                file = file.replace(".png", "")
-                file = file.strip()
-                animated = animated.replace(".png", "")
-                animated = animated.strip()
-                x = re.findall(animated, file)
-                if x:
-                    file = file + ".png"
+            for element in taiko_elements:
+                if file.startswith(element):
                     s_path = f"{source_path}\\{file}"
                     in_file = open(s_path, "rb")
                     data = in_file.read()
@@ -125,6 +106,23 @@ class Skin():
                     print(f"Copied {file}")
                 else:
                     continue
+            # for animated in taiko_animated_elements:
+            #     file = file.replace(".png", "").strip()
+            #     animated = animated.replace(".png", "").strip()
+            #     x = re.findall(animated, file)  
+            #     if x:
+            #         file = file + ".png"
+            #         s_path = f"{source_path}\\{file}"
+            #         in_file = open(s_path, "rb")
+            #         data = in_file.read()
+
+            #         d_path = f"{destination_path}\\{file}"
+            #         with open(d_path, "wb") as out:
+            #             out.write(data)
+            #         print(f"Copied {file}")
+            #     else:
+            #         continue
+            
 
 s = Skin()
 
