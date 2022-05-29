@@ -2,6 +2,7 @@ import wx
 import os
 import re
 from elements import taiko_elements
+from elements import taiko_animated_elements
 
 class Window(wx.Frame):
 
@@ -91,6 +92,24 @@ class Skin():
                 with open(d_path, "wb") as out:
                     out.write(data)
                 print(f"Copied {file}")
+            for animated in taiko_animated_elements:
+                file = file.replace(".png", "")
+                file = file.strip()
+                animated = animated.replace(".png", "")
+                animated = animated.strip()
+                x = re.findall(animated, file)
+                if x:
+                    file = file + ".png"
+                    s_path = f"{source_path}\\{file}"
+                    in_file = open(s_path, "rb")
+                    data = in_file.read()
+
+                    d_path = f"{destination_path}\\{file}"
+                    with open(d_path, "wb") as out:
+                        out.write(data)
+                    print(f"Copied {file}")
+                else:
+                    continue
 
 s = Skin()
 
