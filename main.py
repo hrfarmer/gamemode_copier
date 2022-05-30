@@ -52,7 +52,7 @@ class Window(wx.Frame):
         self.SetMenuBar(menubar)
 
         self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
-        self.Bind(wx.EVT_MENU, s.delete_log(), deleteFile)
+        self.Bind(wx.EVT_MENU, s.delete_log, deleteFile)
 
         self.SetSize((500, 117))
         self.SetTitle('Gamemode Copier')
@@ -120,7 +120,7 @@ class Skin():
 
 
     def copy_files(self, source_path, destination_path, elements):
-        self.delete_log()
+        self.delete_log("yep")
         for file in os.listdir(source_path):
             for element in elements:
                 file = file.replace(".png", "").strip()
@@ -142,7 +142,7 @@ class Skin():
                         f.write(f"\n{file} and {element} dont match!")
                     continue
     
-    def delete_log(self):
+    def delete_log(self, e):
         if os.path.exists("log.txt"):
             os.remove("log.txt")
 
