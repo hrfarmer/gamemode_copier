@@ -47,10 +47,12 @@ class Window(wx.Frame):
         menubar = wx.MenuBar()
         fileMenu = wx.Menu()
         fileItem = fileMenu.Append(wx.ID_EXIT, 'Quit', 'Quit application')
+        deleteFile = fileMenu.Append(wx.ID_DELETE, 'Delete log', 'Delete log')
         menubar.Append(fileMenu, '&File')
         self.SetMenuBar(menubar)
 
         self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
+        self.Bind(wx.EVT_MENU, s.delete_log(), deleteFile)
 
         self.SetSize((500, 117))
         self.SetTitle('Gamemode Copier')
@@ -102,7 +104,6 @@ class Skin():
         for folder in os.listdir(skin_folder):
             skins.append(folder)
         return skins
-    # NEED ELP
     def determine_copy(self, source_path, destination_path, standard_value, taiko_value, ctb_value, mania_value):
         if standard_value:
             self.copy_files(source_path, destination_path, standard_elements)
@@ -119,6 +120,7 @@ class Skin():
 
 
     def copy_files(self, source_path, destination_path, elements):
+        self.delete_log()
         for file in os.listdir(source_path):
             for element in elements:
                 file = file.replace(".png", "").strip()
@@ -133,9 +135,16 @@ class Skin():
                     with open(d_path, "wb") as out:
                         out.write(data)
                     print(f"Copied {file}")
+                    with open('log.txt', 'a') as f:
+                        f.write(f"\n{file} and {element} match!")
                 else:
+                    with open('log.txt', 'a') as f:
+                        f.write(f"\n{file} and {element} dont match!")
                     continue
-        
+    
+    def delete_log(self):
+        if os.path.exists("log.txt"):
+            os.remove("log.txt")
 
 s = Skin()
 
