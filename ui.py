@@ -86,7 +86,7 @@ class Window(wx.Frame):
         taiko_value = self.taiko.GetValue()
         mania_value = self.mania.GetValue()
         ctb_value = self.ctb.GetValue()
-        s.determine_copy(source_path, destination_path, standard_value, taiko_value, mania_value, ctb_value)
+        s.determine_copy(source_path, destination_path, standard_value, taiko_value, ctb_value, mania_value)
     
     def OnBrowse(self, e):
         folder_path = filedialog.askdirectory()
@@ -107,13 +107,13 @@ class Skin():
         if standard_value:
             self.copy_files(source_path, destination_path, standard_elements)
             standard_value = False
-        elif taiko_value:
+        if taiko_value:
             self.copy_files(source_path, destination_path, taiko_elements)
             taiko_value = False
-        elif ctb_value:
+        if ctb_value:
             self.copy_files(source_path, destination_path, ctb_elements)
             ctb_value = False
-        elif mania_value:
+        if mania_value:
             self.copy_files(source_path, destination_path, mania_elements)
             mania_value = False
 
