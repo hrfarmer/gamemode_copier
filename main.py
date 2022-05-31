@@ -49,12 +49,13 @@ class Window(wx.Frame):
         menubar = wx.MenuBar()
         fileMenu = wx.Menu()
         fileItem = fileMenu.Append(wx.ID_EXIT, 'Quit', 'Quit application')
-        deleteFile = fileMenu.Append(wx.ID_DELETE, 'Delete log', 'Delete log')
+        self.deleteFile = fileMenu.Append(wx.ID_DELETE, 'Delete log', 'Delete log')
+        self.loggingCheck = fileMenu.Append(wx.ID_ANY, 'Enable Logging', 'Enable Logging', kind=wx.ITEM_CHECK)
         menubar.Append(fileMenu, '&File')
         self.SetMenuBar(menubar)
 
         self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
-        self.Bind(wx.EVT_MENU, s.delete_log, deleteFile)
+        self.Bind(wx.EVT_MENU, s.delete_log, self.deleteFile)
 
         self.SetSize((500, 117))
         self.SetTitle('Gamemode Copier')
@@ -89,14 +90,19 @@ class Window(wx.Frame):
     def OnSubmit(self, e):
         source_skin = self.combo.GetValue()
         dest_skin = self.combo2.GetValue()
+
         source_path = f"{self.path}\\Skins\\{source_skin}"
         destination_path = f"{self.path}\\Skins\\{dest_skin}"
+
         standard_value = self.standard.GetValue()
         taiko_value = self.taiko.GetValue()
         mania_value = self.mania.GetValue()
         ctb_value = self.ctb.GetValue()
+        logging = self.loggingCheck.IsChecked()
+
+        s.delete_log("yep")
         s.determine_copy(source_path, destination_path,
-                         standard_value, taiko_value, ctb_value, mania_value)
+                         standard_value, taiko_value, ctb_value, mania_value, logging)
 
     def OnBrowse(self, e):
         folder_path = filedialog.askdirectory()
@@ -113,28 +119,28 @@ class Skin():
             skins.append(folder)
         return skins
 
-    def determine_copy(self, source_path, destination_path, standard_value, taiko_value, ctb_value, mania_value):
+    def determine_copy(self, source_path, destination_path, standard_value, taiko_value, ctb_value, mania_value, logging):
         # checks which modes the user selected
         if standard_value:
-            self.copy_files(source_path, destination_path, standard_elements)
+            self.copy_files(source_path, destination_path, standard_elements, logging)
             standard_value = False
         if taiko_value:
-            self.copy_files(source_path, destination_path, taiko_elements)
+            self.copy_files(source_path, destination_path, taiko_elements, logging)
             taiko_value = False
         if ctb_value:
-            self.copy_files(source_path, destination_path, ctb_elements)
+            self.copy_files(source_path, destination_path, ctb_elements, logging)
             ctb_value = False
         if mania_value:
-            self.copy_files(source_path, destination_path, mania_elements)
+            self.copy_files(source_path, destination_path, mania_elements, logging)
             mania_value = False
 
-    def copy_files(self, source_path, destination_path, elements):
-        self.delete_log("yep")
+    def copy_files(self, source_path, destination_path, elements, logging):
         for file in os.listdir(source_path):
             for element in elements:
                 file = file.replace(".png", "").strip()
                 element = element.replace(".png", "").strip()
                 if file.startswith(element):
+                    matches = True
                     file = file + ".png"
                     s_path = f"{source_path}\\{file}"
                     in_file = open(s_path, "rb")
@@ -145,16 +151,24 @@ class Skin():
                         out.write(data)
                     print(f"Copied {file}")
                     # logging
-                    with open('log.txt', 'a') as f:
-                        f.write(f"\n{file} and {element} match!")
+                    self.enable_logging(logging, matches, file, element)
                 else:
-                    with open('log.txt', 'a') as f:
-                        f.write(f"\n{file} and {element} dont match!")
+                    matches = False
+                    self.enable_logging(logging, matches, file, element)
                     continue
 
     def delete_log(self, e):
         if os.path.exists("log.txt"):
             os.remove("log.txt")
+    
+    def enable_logging(self, logging, matches, file, element):
+        if logging:
+            if matches:
+                with open('log.txt', 'a') as f:
+                    f.write(f"\n{file} and {element} match!")
+            else: 
+                with open('log.txt', 'a') as f:
+                    f.write(f"\n{file} and {element} dont match!")
 
 
 s = Skin()
