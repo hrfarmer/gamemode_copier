@@ -48,13 +48,11 @@ class Window(wx.Frame):
 
         menubar = wx.MenuBar()
         fileMenu = wx.Menu()
-        fileItem = fileMenu.Append(wx.ID_EXIT, 'Quit', 'Quit application')
-        self.deleteFile = fileMenu.Append(wx.ID_DELETE, 'Delete log', 'Delete log')
+        self.deleteFile = fileMenu.Append(wx.ID_DELETE, 'Delete Log', 'Delete Log')
         self.loggingCheck = fileMenu.Append(wx.ID_ANY, 'Enable Logging', 'Enable Logging', kind=wx.ITEM_CHECK)
         menubar.Append(fileMenu, '&File')
         self.SetMenuBar(menubar)
 
-        self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
         self.Bind(wx.EVT_MENU, s.delete_log, self.deleteFile)
 
         self.SetSize((500, 117))
