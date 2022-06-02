@@ -119,41 +119,64 @@ class Skin():
 
     def determine_copy(self, source_path, destination_path, standard_value, taiko_value, ctb_value, mania_value, logging):
         # checks which modes the user selected
+        list_of_elements = []
         if standard_value:
-            self.copy_files(source_path, destination_path, standard_elements, logging)
+            self.list_files(source_path, destination_path, standard_elements, logging, list_of_elements)
             standard_value = False
         if taiko_value:
-            self.copy_files(source_path, destination_path, taiko_elements, logging)
+            self.list_files(source_path, destination_path, taiko_elements, logging, list_of_elements)
             taiko_value = False
         if ctb_value:
-            self.copy_files(source_path, destination_path, ctb_elements, logging)
+            self.list_files(source_path, destination_path, ctb_elements, logging, list_of_elements)
             ctb_value = False
         if mania_value:
-            self.copy_files(source_path, destination_path, mania_elements, logging)
+            self.list_files(source_path, destination_path, mania_elements, logging, list_of_elements)
             mania_value = False
 
-    def copy_files(self, source_path, destination_path, elements, logging):
+    def list_files(self, source_path, destination_path, elements, logging, list_of_elements):
         for file in os.listdir(source_path):
             for element in elements:
                 file = file.replace(".png", "").strip()
                 element = element.replace(".png", "").strip()
                 if file.startswith(element):
-                    matches = True
                     file = file + ".png"
-                    s_path = f"{source_path}\\{file}"
-                    in_file = open(s_path, "rb")
-                    data = in_file.read()
+                    list_of_elements.append(file)
+        print(list_of_elements)
+        self.backup_files(source_path, destination_path, logging, list_of_elements)
 
-                    d_path = f"{destination_path}\\{file}"
-                    with open(d_path, "wb") as out:
-                        out.write(data)
-                    print(f"Copied {file}")
+    def backup_files(self, source_path, destination_path, logging, list_of_elements):
+        directory = "Backup"
+        path = os.path.join(destination_path, directory)
+        os.mkdir(path)
+
+        for file in list_of_elements:
+            s_path = f"{destination_path}\\{file}"
+            in_file = open(s_path, "rb")
+            data = in_file.read()
+
+            d_path = f"{destination_path}\\Backup\\{file}"
+            with open(d_path, "wb") as out:
+                out.write(data)
+            print(f"Backed up {file}")
+            
+
+    def copy_files(self, source_path, destination_path, elements, logging):
+        matches = True
+        file = file + ".png"
+        s_path = f"{source_path}\\{file}"
+        in_file = open(s_path, "rb")
+        data = in_file.read()
+
+        d_path = f"{destination_path}\\{file}"
+        with open(d_path, "wb") as out:
+            out.write(data)
+            print(f"Copied {file}")
                     # logging
-                    self.enable_logging(logging, matches, file, element)
-                else:
-                    matches = False
-                    self.enable_logging(logging, matches, file, element)
-                    continue
+            self.enable_logging(logging, matches, file, element)
+        # else:
+        #     matches = False
+        #     self.enable_logging(logging, matches, file, element)
+           
 
     def delete_log(self, e):
         if os.path.exists("log.txt"):
