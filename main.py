@@ -150,11 +150,11 @@ class Skin():
         os.mkdir(path)
 
         for file in list_of_elements:
-            s_path = f"{destination_path}\\{file}"
+            s_path = f"{destination_path}/{file}"
             in_file = open(s_path, "rb")
             data = in_file.read()
 
-            d_path = f"{destination_path}\\Backup\\{file}"
+            d_path = f"{destination_path}/Backup/{file}"
             with open(d_path, "wb") as out:
                 out.write(data)
             print(f"Backed up {file}")
