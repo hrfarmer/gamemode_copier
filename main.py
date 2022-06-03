@@ -139,43 +139,51 @@ class Skin():
                 file = file.replace(".png", "").strip()
                 element = element.replace(".png", "").strip()
                 if file.startswith(element):
+                    matches = True
                     file = file + ".png"
                     list_of_elements.append(file)
-        print(list_of_elements)
+                    self.enable_logging(logging, matches, file, element)
+                else:
+                    matches = False
+                    self.enable_logging(logging, matches, file, element)
+                    
         self.backup_files(source_path, destination_path, logging, list_of_elements)
 
     def backup_files(self, source_path, destination_path, logging, list_of_elements):
         directory = "Backup"
         path = os.path.join(destination_path, directory)
-        os.mkdir(path)
+        try:
+            os.mkdir(path)
+        except FileExistsError:
+            pass
 
         for file in list_of_elements:
             s_path = f"{destination_path}/{file}"
-            in_file = open(s_path, "rb")
-            data = in_file.read()
+            try:
+                in_file = open(s_path, "rb")
+                data = in_file.read()
 
-            d_path = f"{destination_path}/Backup/{file}"
-            with open(d_path, "wb") as out:
-                out.write(data)
-            print(f"Backed up {file}")
+                d_path = f"{destination_path}/Backup/{file}"
+                with open(d_path, "wb") as out:
+                    out.write(data)
+                print(f"Backed up {file}")
+            except FileNotFoundError:
+                continue
+        
+        self.copy_files(source_path, destination_path, list_of_elements, logging)
             
 
     def copy_files(self, source_path, destination_path, elements, logging):
-        matches = True
-        file = file + ".png"
-        s_path = f"{source_path}\\{file}"
-        in_file = open(s_path, "rb")
-        data = in_file.read()
+        for file in elements:
+            s_path = f"{source_path}\\{file}"
+            in_file = open(s_path, "rb")
+            data = in_file.read()
 
-        d_path = f"{destination_path}\\{file}"
-        with open(d_path, "wb") as out:
-            out.write(data)
-            print(f"Copied {file}")
-                    # logging
-            self.enable_logging(logging, matches, file, element)
-        # else:
-        #     matches = False
-        #     self.enable_logging(logging, matches, file, element)
+            d_path = f"{destination_path}\\{file}"
+            with open(d_path, "wb") as out:
+                out.write(data)
+                print(f"Copied {file}")
+                            
            
 
     def delete_log(self, e):
