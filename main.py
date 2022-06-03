@@ -20,7 +20,7 @@ class Window(wx.Frame):
 
         self.panel = wx.Panel(self)
         self.foldermessage = wx.StaticText(
-            self.panel, label="Input the path of your osu! folder:")
+            self.panel, label="Input the path of your osu! folder (if it's not in the default location):")
         self.path = wx.TextCtrl(self.panel, size=(400, -1))
         self.button = wx.Button(self.panel, label="Submit")
         self.button2 = wx.Button(self.panel, label="Browse")
@@ -58,6 +58,13 @@ class Window(wx.Frame):
         self.SetSize((500, 117))
         self.SetTitle('Gamemode Copier')
         self.Centre()
+
+        try:
+            username = os.path.expanduser('~')
+            self.path.SetValue(f"{username}\\AppData\\Local\\osu!")
+            self.OnButton("e")
+        except FileNotFoundError:
+            pass
 
     def OnQuit(self, e):
         self.Close()
